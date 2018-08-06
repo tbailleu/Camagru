@@ -13,6 +13,7 @@ $GLOBALS['ok'] = true;
 </head>
 <body>
     <?php require "view/header.php";?>
+    <?php require "view/capture.php";?>
     <?php require "view/footer.php";?>
 </body>
 </html>

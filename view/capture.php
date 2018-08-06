@@ -1,36 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="camagru.css" />
-	<title>home</title>
-</head>
-<body>
-	<script type="text/javascript" src="galery.js"></script>
-		<div class="row">
-			<img src="chat_icon.png" class="col-lg-1 col-xs-4 col-sm-3 col-md-2"/>
-			<h1 class="col-lg-5 col-xs-8 col-sm-7 col-md-6">Camagru</h1>
-		</div>
-	<div class="navbar navbar-default">
-	  <ul class="nav navbar-nav nav-tabs nav-justified">
-	  	<li><a href="home.html">Home</a></li>
-	    <li class="active"><a href="#">Galery</a></li>
-	    <li><a href="web.php">Webcam</a></li>
-	  </ul>
-	</div>
-	<div class="container">
-	  <ul class="pagination">
-			<?php 
-				include "pagination.php"; 
-			?>
-	  </ul>
-	</div>
-	<hr>
-	<footer>
-		<p id="foot">Copyright &copy 2018 All rigths Reserved</p>
-	</footer>
+<video id="camera"></video>
+<button id="capture">Capture</button>
+<script>
+  var camera = document.getElementById('camera');
 
-</body>
-</html>
+  navigator.getUserMedia({ video: true }, stream=>{
+		camera.srcObject = stream;
+		camera.onloadedmetadata = ()=>camera.play();
+	}, (err)=>{
+		console.log(err.name + ": " + err.message);
+	});
+
+	var capture = document.getElementById('capture');
+
+	var postIMG = (data, sticker)=>{
+		var xhr  = new XMLHttpRequest()
+		xhr.open('POST', "", true)
+		xhr.onload = function () {
+			var response = JSON.parse(xhr.responseText);
+			if (xhr.readyState == 4 && xhr.status == "200") {
+				console.table(response);
+			} else {
+				console.error(response);
+			}
+		}
+		
+		xhr.send(JSON.stringify({img: data, sticker: sticker}));
+	}
+
+	capture.onclick = ()=>{
+		var canvas = document.createElement('canvas');
+		canvas.width = camera.videoWidth;
+		canvas.height = camera.videoHeight;
+		var ctx = canvas.getContext('2d');
+		ctx.drawImage(camera, 0, 0, canvas.width, canvas.height);
+		var img = canvas.toDataURL('image/png');
+
+		postIMG(img);
+	};
+
+</script>

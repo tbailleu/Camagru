@@ -1,6 +1,8 @@
 <style>
 nav {
     grid-template-columns: 1fr 4fr;
+    border-bottom: 1px solid grey;
+    padding: .8em;
 }
 nav > ul {
     grid-template-columns: 1fr 1fr 1fr 1fr;
