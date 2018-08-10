@@ -14,81 +14,120 @@ input {
 input[type=submit] {
     background-color: #4CAF50;
     color: white;
-    cursor:pointer;
+    font-size: 1em;
+    cursor: pointer;
 }
 
 /* Style the container for inputs */
-.container {
+.form {
     background-color: #f1f1f1;
     padding: 20px;
 }
 
 /* The message box is shown when the user clicks on the password field */
-#message, #message_usr, #message_confirm, #message_email {
-    display:none;
+.error {
+    display: none;
     background: #f1f1f1;
-    color: #000;
     position: relative;
     padding: 20px;
     margin-top: 10px;
 }
 
-#message p, #message_usr p, #message_confirm p, #message_email p{
-    padding: 10px 35px;
-    font-size: 18px;
+.visible {
+    display: block;
 }
 
-/* Add a green text color and a checkmark when the requirements are right */
-.valid {
+.error p {
+    color: red;
+    padding: .5em 2em;
+    font-size: 1.1em;
+}
+
+.error > p:before {
+    position: relative;
+    left: -2em;
+    content: "✖";
+}
+
+.error > p.valid {
     color: green;
 }
 
-.valid:before {
-    position: relative;
-    left: -35px;
+.error > p.valid:before {
     content: "✔";
 }
 
-/* Add a red text color and an "x" when the requirements are wrong */
-.invalid {
-    color: red;
-}
-
-.invalid:before {
-    position: relative;
-    left: -35px;
-    content: "✖";
-}
 </style>
 <div class="container">
-    <label for="usrname">Username</label>
-    <input type="text" id="usrname" name="usrname">
-    <label for="email">Email</label>
-    <input type="text" id="email" name="email" required>
-    <label for="psw">Password</label>
-    <input type="password" id="psw" name="psw">
-    <label for="confirm">Confirm Password</label>
-    <input type="password" id="confirm" name="confirm">
-   <input type="submit" value="Submit" id="submit">
+    <form class="form">
+        <label for="username">Username</label>
+            <input type="text" data-error="user" name="username" required>
+        <label for="email">Email</label>
+            <input type="text" data-error="mail" name="email" required>
+        <label for="password">Password</label>
+            <input type="password" data-error="pass" name="password" required>
+        <label for="confirm">Confirm Password</label>
+            <input type="password" data-error="pass2" name="confirm" required>
+        <input type="submit" value="Submit" name="submit">
+    </form>
+    <div class="error err-user">
+        <p>Only alpha-numeric characters</p>
+        <p>Minimum 5 characters</p>
+        <p>Maximum 10 characters</p>
+    </div>
+    <div class="error err-mail">
+        <p>Valide email</p>
+    </div>
+    <div class="error err-pass">
+        <p>A lowercase letter</p>
+        <p>A capital (uppercase) letter</p>
+        <p>A number</p>
+        <p>Minimum 8 characters</p>
+        <p>Maximum 30 characters</p>
+    </div>
+    <div class="error err-pass2">
+        <p>Password confirmed</p>
+    </div>
 </div>
-<div id="message">
-  <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-  <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-  <p id="number" class="invalid">A <b>number</b></p>
-  <p id="length" class="invalid">Minimum <b>8 characters</b></p>
-  <p id="maximum" class="invalid">Maximum <b>30 characters</b></p>
-</div>
-<div id="message_usr">
-  <p id="letter_usr" class="invalid">Only <b>alpha-numeric</b> characters</p>
-  <p id="min" class="invalid">Minimum <b>5 characters</b></p>
-  <p id="max" class="invalid">Maximum <b>10 characters</b></p>
-</div>
-<div id="message_confirm">
-  <p id="confirmation" class="invalid">Password <b>confirmed</b></p>
-</div>
-<div id="message_email">
-  <p id="valide_email" class="invalid">Valide <b>email</b></p>
-</div>
+<script>
+    var inputs = [].slice.call(document.querySelectorAll(".form > input[type='text'], .form > input[type='password']"));
 
-<script src="view/signup.js">
+    inputs.forEach(function(elem, index){
+        elem.onkeyup = elem.checkValidation = function() {
+            var errorFields = [].slice.call(document.querySelectorAll(".error.err-"+this.dataset.error+" p"));
+            errorFields.forEach(function(elem){elem.classList.remove("valid");});
+            this.style.borderColor = "#4CAF50";
+            switch (index) {
+                case 0://username
+                    if (/[a-zA-Z0-9]/.test(this.value)) errorFields[0].classList.add("valid");
+                    if (this.value.length >= 5) errorFields[1].classList.add("valid");
+                    if (this.value.length >= 5 && this.value.length <= 10) errorFields[2].classList.add("valid");
+                    if (/^[a-zA-Z0-9]{5,10}$/.test(this.value)) return true;break;
+                    case 1://email
+                    if (/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/.test(this.value)) errorFields[0].classList.add("valid");
+                    if (/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/.test(this.value)) return true;break;
+                    case 2://password
+                    if (/[a-z]/.test(this.value)) errorFields[0].classList.add("valid");
+                    if (/[A-Z]/.test(this.value)) errorFields[1].classList.add("valid");
+                    if (/[0-9]/.test(this.value)) errorFields[2].classList.add("valid");
+                    if (this.value.length >= 8) errorFields[3].classList.add("valid");
+                    if (this.value.length >= 8 && this.value.length <= 30) errorFields[4].classList.add("valid");
+                    if (/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,30}$/.test(this.value)) return true;break;
+                case 3://password confirm
+                    if (this.value == inputs[2].value) errorFields[0].classList.add("valid");
+                    if (this.value == inputs[2].value) return true;break;
+                default:break;
+            }
+            this.style.borderColor = "#d00";
+            return false;
+        }
+        elem.onfocus = function(){document.querySelector(".error.err-"+this.dataset.error).style.display = "block";}
+        elem.onblur = function(){document.querySelector(".error.err-"+this.dataset.error).style.display = "none";}
+    });
+
+    document.querySelector(".form > input[type='submit']").onclick = function(e) {
+        if (inputs.map(function(elem){return elem.checkValidation();}).includes(false))
+            ;
+        e.preventDefault();
+    }
 </script>

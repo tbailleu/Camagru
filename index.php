@@ -1,5 +1,6 @@
 <?php
-$GLOBALS['ok'] = true;
+    session_start();
+    $_SESSION['user']['id'] = 1;
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +14,7 @@ $GLOBALS['ok'] = true;
 </head>
 <body>
     <?php require "view/header.php";?>
-    <?php require "view/signup.php";?>
+    <?php require "view/capture.php";?>
     <?php require "view/footer.php";?>
 </body>
 </html>
