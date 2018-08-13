@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $_SESSION['user']['id'] = 1;
+    //$_SESSION['user']['id'] = 1;
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +14,7 @@
 </head>
 <body>
     <?php require "view/header.php";?>
-    <?php require "view/capture.php";?>
+    <?php require "view/images.php";?>
     <?php require "view/footer.php";?>
 </body>
 </html>

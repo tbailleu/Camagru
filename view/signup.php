@@ -103,10 +103,10 @@ input[type=submit] {
                     if (this.value.length >= 5) errorFields[1].classList.add("valid");
                     if (this.value.length >= 5 && this.value.length <= 10) errorFields[2].classList.add("valid");
                     if (/^[a-zA-Z0-9]{5,10}$/.test(this.value)) return true;break;
-                    case 1://email
+                case 1://email
                     if (/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/.test(this.value)) errorFields[0].classList.add("valid");
                     if (/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/.test(this.value)) return true;break;
-                    case 2://password
+                case 2://password
                     if (/[a-z]/.test(this.value)) errorFields[0].classList.add("valid");
                     if (/[A-Z]/.test(this.value)) errorFields[1].classList.add("valid");
                     if (/[0-9]/.test(this.value)) errorFields[2].classList.add("valid");
@@ -126,8 +126,22 @@ input[type=submit] {
     });
 
     document.querySelector(".form > input[type='submit']").onclick = function(e) {
-        if (inputs.map(function(elem){return elem.checkValidation();}).includes(false))
-            ;
         e.preventDefault();
+        if (!inputs.map(function(elem){return elem.checkValidation();}).includes(false)){
+            var xhr  = new XMLHttpRequest()
+            xhr.open('POST', "utils/signup.php", true)
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == "200") {
+                    console.table(response);
+                } else {
+                    console.error(response);
+                }
+            }
+            var tab = {};
+            inputs.forEach(function(e, i){if (i!=3)return tab[e.name]=e.value;});
+            xhr.send("json="+encodeURI(JSON.stringify(tab)));
+        }
     }
 </script>

@@ -5,12 +5,14 @@
 
 	if (!array_key_exists('user', $_SESSION)) {echo "User not logged"; die();}
 
-	$sticker = imagecreatefrompng("stickers/".intval($_POST['sticker']).".png");
+	$data = json_decode($_REQUEST['json'], true);
+
+	$sticker = imagecreatefrompng("stickers/".intval($data['sticker']).".png");
 	
-	$_POST['img'] = str_replace(' ', '+', $_POST['img']);
-	$img = imagecreatefromstring(base64_decode(explode(',', $_POST['img'])[1]));
+	$data['img'] = str_replace(' ', '+', $data['img']);
+	$img = imagecreatefromstring(base64_decode(explode(',', $data['img'])[1]));
 	
-	imagecopyresized($img, $sticker, intval($_POST['x']), intval($_POST['y']), 0, 0, intval($_POST['sx']), intval($_POST['sy']), imagesx($sticker), imagesy($sticker));
+	imagecopyresized($img, $sticker, intval($data['x']), intval($data['y']), 0, 0, intval($data['sx']), intval($data['sy']), imagesx($sticker), imagesy($sticker));
 	
 	$next_id = intval($pdo->query("SELECT `id` FROM `image` ORDER BY `id` DESC")->fetch()['id'])+1;
 	
