@@ -1,8 +1,15 @@
 <style>
 nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     grid-template-columns: 1fr 4fr;
     border-bottom: 1px solid grey;
     padding: .8em;
+
+    z-index: 100;
+    background-color: white;
 }
 nav > ul {
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -19,6 +26,10 @@ nav > ul,
 nav > ul a > li {
     display: grid;
 }
+span.space {
+    display: block;
+    padding: .8em;
+}
 </style>
 <nav>
     <div>
@@ -31,4 +42,4 @@ nav > ul a > li {
         <a href=""><li>logout</li></a>
     </ul>
 </nav>
-
+<span class="space">&nbsp;</span>
