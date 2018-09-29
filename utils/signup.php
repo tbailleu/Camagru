@@ -25,7 +25,7 @@
     if (!!$foundUser->fetch()) {echo "Username already used"; die();}
     if (!!$foundMail->fetch()) {echo "Email already used"; die();}
 
-    $token = hash("whirlpool", $data['username']) . hash("whirlpool", $data['email']) . hash("whirlpool", rand(1,10));
+    $token = hash("whirlpool", $data['username']) . hash("whirlpool", $data['email']) . hash("whirlpool", rand(1,10000));
 
     $pdo->prepare("INSERT INTO `users` (`username`, `email`, `pwd`, `status`, `activationkey`) VALUES (:username, :email, :pwd, -1, :token)")
         ->execute(array('username' => $data['username'], 'email' => $data['email'], 'pwd' => hash("whirlpool", $data['password']), 'token' => $token));

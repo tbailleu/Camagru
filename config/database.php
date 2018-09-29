@@ -11,6 +11,7 @@
 		$pdo->exec("CREATE DATABASE IF NOT EXISTS `camagru`");
 		$pdo->exec("USE camagru");
 	} catch (PDOException $e) {
+		var_dump($e);
 		echo 'Échec lors de la connexion : ' . $e->getMessage();
 		die();
 	}

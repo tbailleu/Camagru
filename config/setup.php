@@ -35,7 +35,8 @@ $pdo->exec("INSERT INTO `users` (
 		'tbailleu@student.42.fr',
 		'".hash('whirlpool', "Pass1234")."',
 		1,
-		'0'");
+		'0'
+	)");
 
 $pdo->exec("INSERT INTO `users` (
 		`username`,
@@ -44,8 +45,9 @@ $pdo->exec("INSERT INTO `users` (
 		`status`,
 		`activationkey`
 	) VALUES (
-		'acalleja',
-		'acalleja@student.42.fr',
+		'blsegal',
+		'blsegal@student.42.fr',
 		'".hash('whirlpool', "Salut123")."',
 		1,
-		'0'");
+		'0'
+	)");
