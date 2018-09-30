@@ -18,6 +18,10 @@ input[type=submit] {
     cursor: pointer;
 }
 
+input[name=reset] {
+    background-color: #AF3333;
+}
+
 /* Style the container for inputs */
 .form {
     background-color: #f1f1f1;
@@ -27,9 +31,10 @@ input[type=submit] {
 <div class="container">
     <form class="form">
         <label for="username">Username</label>
-            <input type="text" data-error="user" name="username" required>
+        <input type="text" data-error="user" name="username" required>
         <label for="password">Password</label>
-            <input type="password" data-error="pass" name="password" required>
+        <input type="password" data-error="pass" name="password" required>
+        <input type="submit" value="Mot de passe oublié ?" name="reset">
         <input type="submit" value="Submit" name="submit">
     </form>
 </div>
@@ -51,7 +56,7 @@ input[type=submit] {
         }
     });
 
-    document.querySelector(".form > input[type='submit']").onclick = function(e) {
+    document.querySelector(".form > input[name='submit']").onclick = function(e) {
         e.preventDefault();
         if (!inputs.map(function(elem){return elem.checkValidation();}).includes(false)){
             var xhr  = new XMLHttpRequest()
@@ -67,6 +72,26 @@ input[type=submit] {
             }
             var tab = {};
             inputs.forEach(function(e){return tab[e.name]=e.value;});
+            xhr.send("json="+encodeURI(JSON.stringify(tab)));
+        }
+    }
+
+    document.querySelector(".form > input[name='reset']").onclick = function(e) {
+        e.preventDefault();
+        if (inputs[0].checkValidation()){
+            var xhr  = new XMLHttpRequest()
+            xhr.open('POST', "utils/login.php", true)
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == "200") {
+                    console.table(response);
+                } else {
+                    console.error(response);
+                }
+            }
+            var tab = {reset:true};
+            tab[inputs[0].name] = inputs[0].value;
             xhr.send("json="+encodeURI(JSON.stringify(tab)));
         }
     }

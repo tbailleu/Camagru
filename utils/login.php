@@ -9,8 +9,13 @@ $data = json_decode($_REQUEST["json"], true);
 
 if (count($data) != 2) {echo "Invalid number of arguments needed (2) but received (".count($data).")"; die();}
 if (!array_key_exists('username', $data) || !strlen($data['username'])) {echo "Username field not found"; die();}
-if (!array_key_exists('password', $data) || !strlen($data['password'])) {echo "Password field not found"; die();}
+
+if (array_key_exists('reset', $data)) {
     
+}
+
+if (!array_key_exists('password', $data) || !strlen($data['password'])) {echo "Password field not found"; die();}
+
 if (!preg_match("/^[a-zA-Z0-9]{5,10}$/", $data['username'])) {echo "Username field mal-formed"; die();}
 if (!preg_match("/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,30}$/", $data['password'])) {echo "Password field mal-formed"; die();}
 

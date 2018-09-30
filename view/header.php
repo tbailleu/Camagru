@@ -39,7 +39,9 @@ span.space {
         <a href=""><li>account</li></a>
         <a href=""><li>capture</li></a>
         <a href=""><li>signin</li></a>
-        <a href=""><li>logout</li></a>
+        <?php if (array_key_exists('user', $_SESSION)):?>
+            <a href=""><li>logout</li></a>
+        <?php endif;?>
     </ul>
 </nav>
 <span class="space">&nbsp;</span>

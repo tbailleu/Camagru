@@ -16,6 +16,7 @@ $pdo->exec("CREATE TABLE `users` (
 $pdo->exec("CREATE TABLE `image` (
 	`id` int(11) NOT NULL PRIMARY KEY UNIQUE KEY AUTO_INCREMENT,
 	`path` varchar(250) NOT NULL,
+	`nblike` int(11) UNSIGNED NOT NULL DEFAULT '0',
 	`user_id` int(11) NOT NULL)");
 
 $pdo->exec("CREATE TABLE `comment` (
