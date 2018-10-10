@@ -24,6 +24,7 @@
                 data.innerHTML = response;
                 data.dataset.index = pageMin;
                 data.className = "page";
+                pagesize = data.clientHeight;
                 var scrollY = window.scrollY;
                 document.querySelector(".imagelist .page").parentElement.insertBefore(data, document.querySelector(".imagelist > .page"));
                 window.scrollTo(0, scrollY + pagesize);
@@ -47,6 +48,7 @@
                 data.innerHTML = response;
                 data.dataset.index = pageMax;
                 data.className = "page";
+                pagesize = data.clientHeight;
                 document.querySelector(".imagelist .page").parentElement.appendChild(data);
             } else {
                 console.error(response);
@@ -57,14 +59,17 @@
     }
 
     setInterval(function () {
-        
-        if (document.body.scrollHeight - window.innerHeight - window.scrollY < pagesize/2)
+        if (pagesize && document.body.scrollHeight - window.innerHeight - window.scrollY < pagesize/2)
             getNextpage();
-        else if (window.scrollY < pagesize/2)
+        else if (window.scrollY <= pagesize/2)
             getPreviouspage();
-        if (pageIndex != document.querySelectorAll(".imagelist > .page")[parseInt(window.scrollY / pagesize)].dataset.index || 0){
+        if (pagesize && pageIndex != document.querySelectorAll(".imagelist > .page")[parseInt(window.scrollY / pagesize)].dataset.index || 0){
             pageIndex = document.querySelectorAll(".imagelist > .page")[parseInt(window.scrollY / pagesize)].dataset.index || 0
             history.replaceState({},"","?page="+pageIndex);
         }
+        document.querySelectorAll(".imagelist .page").forEach(function (e, i) {
+            if (i && e.clientHeight == 16)
+                e.remove();
+        })
     }, 500)
 </script>

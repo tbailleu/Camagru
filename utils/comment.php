@@ -13,8 +13,8 @@ $data['message'] = trim($data['message']);
 
 if (!preg_match("/^[a-zA-Z0-9 ]{1,250}$/", $data['message'])) {echo "Message field mal-formed"; die();}
 
-$comment = $pdo->prepare("INSERT INTO `comment` (`text`, `user_id`, `image_id`) VALUES (:msg, :userid, :imageid)");
-$comment->execute(array(
+$req = $pdo->prepare("INSERT INTO `comment` (`text`, `user_id`, `image_id`) VALUES (:msg, :userid, :imageid)");
+$req->execute(array(
     'msg' => $data['message'],
     'userid' => $_SESSION['user']['id'],
     'imageid' => $data['imageid']

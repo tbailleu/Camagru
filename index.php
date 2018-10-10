@@ -1,5 +1,5 @@
 <?php
-    session_start();
+    if (session_status()==PHP_SESSION_NONE) session_start();
     $_SESSION['user']['id'] = 1;
 ?>
 
@@ -14,7 +14,10 @@
 </head>
 <body>
     <?php require "view/header.php";?>
-    <?php require "view/galerie.php";?>
+    <?php 
+    // require "view/capture.php";
+    require "view/galerie.php";
+    ?>
     <?php require "view/footer.php";?>
 </body>
 </html>

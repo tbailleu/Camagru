@@ -3,6 +3,8 @@
     $DB_USER = "root";
     $DB_PASSWORD = "salut123";
 
+	if (session_status()==PHP_SESSION_NONE) session_start();
+
     try {
 		$pdo = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
