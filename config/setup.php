@@ -11,7 +11,7 @@ $pdo->exec("CREATE TABLE `users` (
 	`pwd` varchar(128) NOT NULL,
 	`email` varchar(30) NOT NULL UNIQUE KEY,
 	`activationkey` varchar(384) NOT NULL,
-	`status` int(2) NOT NULL DEFAULT '-1')");
+	`status` int(2) NOT NULL DEFAULT '0')");
 
 $pdo->exec("CREATE TABLE `image` (
 	`id` int(11) NOT NULL PRIMARY KEY UNIQUE KEY AUTO_INCREMENT,
@@ -33,9 +33,9 @@ $pdo->exec("INSERT INTO `users` (
 		`activationkey`
 	) VALUES (
 		'tbailleu',
-		'tbailleu@student.42.fr',
+		'poubelle50@hotmail.fr',
 		'".hash('whirlpool', "Pass1234")."',
-		1,
+		0,
 		'0'
 	)");
 
@@ -49,6 +49,6 @@ $pdo->exec("INSERT INTO `users` (
 		'blsegal',
 		'blsegal@student.42.fr',
 		'".hash('whirlpool', "Salut123")."',
-		1,
+		0,
 		'0'
 	)");
