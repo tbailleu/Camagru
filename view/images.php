@@ -89,12 +89,14 @@ $imglist = $imglist->fetchAll();
     ?></div>
         <div class="action">
             <div class="like">Like <?=$img["nblike"]?></div>
-            <div>Comment</div>
+            <div class="comment">Comment</div>
         </div>
     </div>
     <script>
         document.querySelector(".imagelist .image[data-imageid='<?=$img["id"]?>'] .like").onclick = function (e) {
             e.preventDefault();
+            e.target.onclick = null;
+            e.target.style.cursor = "default";
             var xhr  = new XMLHttpRequest()
             xhr.open('POST', "utils/like.php", true)
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -108,6 +110,22 @@ $imglist = $imglist->fetchAll();
                 }
             }
             var tab = {imageid: <?=intval($img["id"])?>};
+            xhr.send("json="+encodeURI(JSON.stringify(tab)));
+        }
+        document.querySelector(".imagelist .image[data-imageid='<?=$img["id"]?>'] .comment").onclick = function (e) {
+            e.preventDefault();
+            e.target.onclick = null;
+            e.target.style.cursor = "default";
+            var xhr  = new XMLHttpRequest()
+            xhr.open('POST', "utils/comment.php", true)
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            var self = this;
+            xhr.onload = function () {
+                var response = xhr.responseText;
+                if (!(xhr.readyState == 4 && xhr.status == "200")) console.error(response);
+            }
+            comment = prompt("Saisir votre commentaire içi\n\nvotre commentaire doit valider la regex suivante:\n[a-zA-Z0-9 ]{1,250}");
+            var tab = {imageid: <?=intval($img["id"])?>, message: comment};
             xhr.send("json="+encodeURI(JSON.stringify(tab)));
         }
     </script>

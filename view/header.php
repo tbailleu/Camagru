@@ -1,3 +1,6 @@
+<?php
+if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
+?>
 <style>
 nav {
     position: fixed;
@@ -12,7 +15,7 @@ nav {
     background-color: white;
 }
 nav > ul {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 nav > ul > a > li {
     align-content: center;
@@ -33,14 +36,17 @@ span.space {
 </style>
 <nav>
     <div>
-        logo
+        <a href="/">Camagru</a>
     </div>
     <ul>
-        <a href=""><li>account</li></a>
-        <a href=""><li>capture</li></a>
-        <a href=""><li>signin</li></a>
         <?php if (array_key_exists('user', $_SESSION)):?>
-            <a href=""><li>logout</li></a>
+        <a href="?capture"><li>capture</li></a>
+        <a href="?account"><li>account</li></a>
+        <a href="/utils/logout.php"><li>logout</li></a>
+        <?php else:?>
+        <li>&nbsp;</li>
+        <a href="?signup"><li>signup</li></a>
+        <a href="?login"><li>login</li></a>
         <?php endif;?>
     </ul>
 </nav>
