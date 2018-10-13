@@ -5,11 +5,9 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
 * {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
     border-spacing: 0;
-    margin: 0;
-    padding: 0;
-    border: none;
     box-sizing: border-box;
-  }
+    border: none;
+}
 nav {
     position: fixed;
     top: 0;

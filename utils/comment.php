@@ -26,15 +26,16 @@ $req->execute(array(
     'imageid' => $data['imageid']
 ));
 
-$user = $pdo->prepare("SELECT `email`, `username` FROM `users` WHERE `id` = :id");
+$user = $pdo->prepare("SELECT `status`, `email`, `username` FROM `users` WHERE `id` = :id");
 $user->execute(array('id' => $img["user_id"]));
 $user = $user->fetch();
 
-mail( 
-    $user["email"],
-    "Votre Image a ete commente !", 
-    "Bonjour ".$user["username"]."\r\nVotre image a ete commente le ". date("D M j G:i:s") . "\r\ncommentaire : " . $data['message'] .
-    "\r\nhttp://".$HOSTNAME."/" . $img["path"]
-);
+if ($user["status"])
+    mail( 
+        $user["email"],
+        "Votre Image a ete commente !", 
+        "Bonjour ".$user["username"]."\r\nVotre image a ete commente le ". date("D M j G:i:s") . "\r\ncommentaire : " . $data['message'] .
+        "\r\nhttp://".$HOSTNAME."/" . $img["path"]
+    );
 
 echo $data['message'];

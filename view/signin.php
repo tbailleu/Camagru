@@ -1,4 +1,5 @@
 <?php
+if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
 if (array_key_exists('user', $_SESSION)) header("location: /");
 ?>
 <style>
@@ -70,7 +71,7 @@ input[data-type=reset] {
                 if (xhr.readyState == 4 && xhr.status == "200") {
                     if (response == "Ok") location = location.origin;
                 } else {
-                    console.error(response);
+                    //console.error(response);
                 }
             }
             var tab = {};
@@ -90,7 +91,7 @@ input[data-type=reset] {
                 if (xhr.readyState == 4 && xhr.status == "200") {
                     if (response == "Ok") location = location.origin;
                 } else {
-                    console.error(response);
+                    //console.error(response);
                 }
             }
             var tab = {reset:true};

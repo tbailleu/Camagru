@@ -1,4 +1,6 @@
 <?php
+if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
+require_once("config/database.php");
 if (!array_key_exists('user', $_SESSION)) header("location: /");
 ?>
 <style>
@@ -21,8 +23,12 @@ input[type=submit] {
     cursor: pointer;
 }
 
-input[data-type=reset] {
-    background-color: #AF3333;
+input[name=submitsetting] {
+    background-color: #dd721b;
+}
+
+input[name=submitnewpass] {
+    background-color: #fd4646;
 }
 
 /* Style the container for inputs */
@@ -36,25 +42,27 @@ input[data-type=reset] {
 }
 </style>
 <div class="container">
-    <form class="form">
+    <form class="form" action="utils/settings.php" method="post">
         <label for="newusername">User name</label>
-        <input type="newusername" name="newusername" placeholder="<?=$_SESSION["user"]["username"];?>" value="<?=$_SESSION["user"]["username"];?>" required>
+        <input type="text" name="newusername" placeholder="<?=$_SESSION["user"]["username"];?>" value="<?=$_SESSION["user"]["username"];?>" required>
         <label for="newmail">Email address</label>
-        <input type="newmail" name="newmail" placeholder="<?=$_SESSION["user"]["email"];?>" value="<?=$_SESSION["user"]["email"];?>" required>
-        <input type="submit" value="Save" data-type="newmail">
+        <input type="email" name="newmail" placeholder="<?=$_SESSION["user"]["email"];?>" value="<?=$_SESSION["user"]["email"];?>" required>
+        <input type="submit" value="Save" name="submitnewlogin">
     </form>
-    <form class="form">
-        <label>Email notifications</label>
-        <input type="checkbox" name="notify" <?=$_SESSION["user"]["status"]==1?"checked":"";?>>
-        <input type="submit" value="Save" data-type="setting">
+    <form class="form" action="utils/settings.php" method="post">
+        <label for="notify">Settings</label>
+        <input type="checkbox" name="notify" <?php
+            if ($_SESSION["user"]["status"]===1) echo "checked";
+        ?>>
+        <input type="submit" value="Save" name="submitsetting">
     </form>
-    <form class="form">
+    <form class="form" action="utils/settings.php" method="post">
         <label for="oldpass">Old password</label>
-        <input type="oldpass" name="oldpass" required>
+        <input type="password" name="oldpass" required>
         <label for="newpass">New password</label>
-        <input type="newpass" name="newpass" required>
+        <input type="password" name="newpass" required>
         <label for="confirmpass">Confirm new password</label>
-        <input type="confirmpass" name="confirmpass" required>
-        <input type="submit" value="Save" data-type="newpass">
+        <input type="password" name="confirmpass" required>
+        <input type="submit" value="Save" name="submitnewpass">
     </form>
 </div>

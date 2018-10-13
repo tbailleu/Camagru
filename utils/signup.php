@@ -1,8 +1,6 @@
 <?php
 require_once("../config/database.php");
 
-if (session_status()==PHP_SESSION_NONE) session_start();
-
 if (array_key_exists('user', $_SESSION)) {echo "User logged"; die();}
 
 $data = json_decode($_REQUEST["json"], true);
@@ -21,9 +19,12 @@ $foundUser->execute(array('username' => $data['username']));
 $foundMail = $pdo->prepare("SELECT * FROM `users` WHERE `email` = :email");
 $foundMail->execute(array('email' => $data['email']));
 
-if (!!$foundUser->fetch() && !!$foundMail->fetch()) {echo "Username and Email already used"; die();}
-if (!!$foundUser->fetch()) {echo "Username already used"; die();}
-if (!!$foundMail->fetch()) {echo "Email already used"; die();}
+$foundUser = $foundUser->fetch();
+$foundMail = $foundMail->fetch();
+
+if ($foundUser && $foundMail) {echo "Username and Email already used"; die();}
+if ($foundUser) {echo "Username already used"; die();}
+if ($foundMail) {echo "Email already used"; die();}
 
 $token = hash("whirlpool", $data['username']) . hash("whirlpool", $data['email']) . hash("whirlpool", rand(1,10000));
 

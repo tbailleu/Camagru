@@ -1,8 +1,6 @@
 <?php
 require_once("../config/database.php");
 
-if (session_status()==PHP_SESSION_NONE) session_start();
-
 if (array_key_exists('user', $_SESSION)) {echo "User logged"; die();}
 
 $token = $_REQUEST["token"];
