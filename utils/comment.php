@@ -1,5 +1,5 @@
 <?php
-require_once("database.php");
+require_once("../config/database.php");
 
 if (!(array_key_exists('user', $_SESSION))) {echo "User not logged"; die();}
 
@@ -13,11 +13,28 @@ $data['message'] = trim($data['message']);
 
 if (!preg_match("/^[a-zA-Z0-9 ]{1,250}$/", $data['message'])) {echo "Message field mal-formed"; die();}
 
+$img = $pdo->prepare("SELECT * FROM `image` WHERE `id`=:imageid");
+if (!($img->execute(array('imageid' => intval($data['imageid']))))){
+    echo "Invalid imageid"; die();
+};
+$img = $img->fetch();
+
 $req = $pdo->prepare("INSERT INTO `comment` (`text`, `user_id`, `image_id`) VALUES (:msg, :userid, :imageid)");
 $req->execute(array(
     'msg' => $data['message'],
     'userid' => $_SESSION['user']['id'],
     'imageid' => $data['imageid']
 ));
+
+$user = $pdo->prepare("SELECT `email`, `username` FROM `users` WHERE `id` = :id");
+$user->execute(array('id' => $img["user_id"]));
+$user = $user->fetch();
+
+mail( 
+    $user["email"],
+    "Votre Image a ete commente !", 
+    "Bonjour ".$user["username"]."\r\nVotre image a ete commente le ". date("D M j G:i:s") . "\r\ncommentaire : " . $data['message'] .
+    "\r\nhttp://".$HOSTNAME."/" . $img["path"]
+);
 
 echo $data['message'];

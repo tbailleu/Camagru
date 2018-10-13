@@ -1,3 +1,6 @@
+<?php
+if (array_key_exists('user', $_SESSION)) header("location: /");
+?>
 <style>
 /* Style all input fields */
 input {

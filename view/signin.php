@@ -1,3 +1,6 @@
+<?php
+if (array_key_exists('user', $_SESSION)) header("location: /");
+?>
 <style>
 /* Style all input fields */
 input {
@@ -18,7 +21,7 @@ input[type=submit] {
     cursor: pointer;
 }
 
-input[name=reset] {
+input[data-type=reset] {
     background-color: #AF3333;
 }
 
@@ -34,8 +37,8 @@ input[name=reset] {
         <input type="text" data-error="user" name="username" required>
         <label for="password">Password</label>
         <input type="password" data-error="pass" name="password" required>
-        <input type="submit" value="Mot de passe oublié ?" name="reset">
-        <input type="submit" value="Submit" name="submit">
+        <input type="submit" value="Submit" data-type="login">
+        <input type="submit" value="Mot de passe oublié ?" data-type="reset">
     </form>
 </div>
 <script>
@@ -56,16 +59,16 @@ input[name=reset] {
         }
     });
 
-    document.querySelector(".form > input[name='submit']").onclick = function(e) {
+    document.querySelector(".form > input[data-type='login']").onclick = function(e) {
         e.preventDefault();
         if (!inputs.map(function(elem){return elem.checkValidation();}).includes(false)){
             var xhr  = new XMLHttpRequest()
             xhr.open('POST', "utils/login.php", true)
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.onload = function () {
-                var response = JSON.parse(xhr.responseText);
+                var response = xhr.responseText;
                 if (xhr.readyState == 4 && xhr.status == "200") {
-                    console.table(response);
+                    if (response == "Ok") location = location.origin;
                 } else {
                     console.error(response);
                 }
@@ -76,16 +79,16 @@ input[name=reset] {
         }
     }
 
-    document.querySelector(".form > input[name='reset']").onclick = function(e) {
+    document.querySelector(".form > input[data-type='reset']").onclick = function(e) {
         e.preventDefault();
         if (inputs[0].checkValidation()){
             var xhr  = new XMLHttpRequest()
             xhr.open('POST', "utils/login.php", true)
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.onload = function () {
-                var response = JSON.parse(xhr.responseText);
+                var response = xhr.responseText;
                 if (xhr.readyState == 4 && xhr.status == "200") {
-                    console.table(response);
+                    if (response == "Ok") location = location.origin;
                 } else {
                     console.error(response);
                 }
