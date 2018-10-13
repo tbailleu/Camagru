@@ -1,3 +1,6 @@
+<?php
+if (!array_key_exists('user', $_SESSION)) header("location: /");
+?>
 <video id="camera"></video>
 <button id="capture">Capture</button>
 <script>

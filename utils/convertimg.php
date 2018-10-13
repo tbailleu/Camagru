@@ -1,7 +1,7 @@
 <?php
 	require_once("../config/database.php");
 
-	session_start();
+    if (session_status()==PHP_SESSION_NONE) session_start();
 
 	if (!array_key_exists('user', $_SESSION)) {echo "User not logged"; die();}
 

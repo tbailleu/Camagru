@@ -1,4 +1,5 @@
 <?php
+	$HOSTNAME = "e3r11p1:8080";
     $DB_DSN = "mysql:host=localhost";
     $DB_USER = "root";
     $DB_PASSWORD = "salut123";
