@@ -3,6 +3,8 @@ require_once("../config/database.php");
 
 if (array_key_exists('user', $_SESSION)) {echo "User logged"; die();}
 
+if (!array_key_exists('token', $_REQUEST) || !strlen($_REQUEST['token'])) {echo "Token not found"; die();}
+
 $token = $_REQUEST["token"];
 
 if (!preg_match("/^[a-z0-9]{256}$/", $token)) {echo "Token mal-formed"; die();}

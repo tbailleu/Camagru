@@ -52,7 +52,7 @@ input[name=submitnewpass] {
     <form class="form" action="utils/settings.php" method="post">
         <label for="notify">Email notification settings</label>
         <input type="checkbox" name="notify" <?php
-            if ($_SESSION["user"]["status"]===1) echo "checked";
+            if ($_SESSION["user"]["status"]==1) echo "checked";
         ?>>
         <input type="submit" value="Save" name="submitsetting">
     </form>
