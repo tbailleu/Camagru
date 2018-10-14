@@ -19,6 +19,12 @@ $pdo->exec("CREATE TABLE `image` (
 	`nblike` int(11) UNSIGNED NOT NULL DEFAULT '0',
 	`user_id` int(11) NOT NULL)");
 
+$pdo->exec("CREATE TABLE `comment` (
+	`id` int(11) NOT NULL PRIMARY KEY UNIQUE KEY AUTO_INCREMENT,
+	`text` varchar(250) NOT NULL,
+	`user_id` int(11) NOT NULL,
+	`image_id` int(11) NOT NULL)");
+
 $pdo->exec("INSERT INTO `users` (
 		`username`,
 		`email`,
