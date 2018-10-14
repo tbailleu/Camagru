@@ -39,6 +39,9 @@ span.space {
     display: block;
     padding: .8em;
 }
+pre#error {
+    padding: 1em;
+}
 </style>
 <nav>
     <div>

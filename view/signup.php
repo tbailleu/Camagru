@@ -93,6 +93,7 @@ input[type=submit] {
         <p>Password confirmed</p>
     </div>
 </div>
+<pre id="error"></pre>
 <script>
     var inputs = [].slice.call(document.querySelectorAll(".form > input[type='text'], .form > input[type='password']"));
 
@@ -138,7 +139,8 @@ input[type=submit] {
             xhr.onload = function () {
                 var response = xhr.responseText;
                 if (xhr.readyState == 4 && xhr.status == "200") {
-                    console.table(response);
+                    if (response == "Ok") location = location.origin;
+                    document.querySelector("#error").innerHTML = response;
                 } else {
                     //console.error(response);
                 }

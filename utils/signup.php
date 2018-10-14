@@ -28,7 +28,7 @@ if ($foundMail) {echo "Email already used"; die();}
 
 $token = hash("whirlpool", $data['username']) . hash("whirlpool", $data['email']) . hash("whirlpool", rand(1,10000));
 
-$pdo->prepare("INSERT INTO `users` (`username`, `email`, `pwd`, `status`, `activationkey`) VALUES (:username, :email, :pwd, -1, :token)")
+$pdo->prepare("INSERT INTO `users` (`username`, `email`, `pwd`, `status`, `activationkey`) VALUES (:username, :email, :pwd, 1, :token)")
     ->execute(array('username' => $data['username'], 'email' => $data['email'], 'pwd' => hash("whirlpool", $data['password']), 'token' => $token));
 
 mail( 
@@ -37,4 +37,4 @@ mail(
 	"Merci pour votre inscription !\r\n Veuillez confimer votre inscription en cliquant sur".
     "\r\nhttp://".$HOSTNAME."/utils/activate.php?token=" . $token
 );
-echo $token;
+echo "Ok";

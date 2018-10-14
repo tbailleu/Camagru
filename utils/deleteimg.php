@@ -16,4 +16,4 @@ if (!$img) {echo "Forbidden action"; die();}
 $pdo->prepare("DELETE FROM `image` WHERE `id`=:imageid AND `user_id`=:userid")
     ->execute(array('imageid' => intval($data['imageid']), 'userid' => $_SESSION["user"]["id"]));
 
-die();header("location: /");
+echo "Ok";

@@ -42,6 +42,7 @@ input[data-type=reset] {
         <input type="submit" value="Mot de passe oublié ?" data-type="reset">
     </form>
 </div>
+<pre id="error"></pre>
 <script>
     var inputs = [].slice.call(document.querySelectorAll(".form > input[type='text'], .form > input[type='password']"));
 
@@ -70,6 +71,7 @@ input[data-type=reset] {
                 var response = xhr.responseText;
                 if (xhr.readyState == 4 && xhr.status == "200") {
                     if (response == "Ok") location = location.origin;
+                    document.querySelector("#error").innerHTML = response;
                 } else {
                     //console.error(response);
                 }
@@ -90,6 +92,7 @@ input[data-type=reset] {
                 var response = xhr.responseText;
                 if (xhr.readyState == 4 && xhr.status == "200") {
                     if (response == "Ok") location = location.origin;
+                    document.querySelector("#error").innerHTML = response;
                 } else {
                     //console.error(response);
                 }

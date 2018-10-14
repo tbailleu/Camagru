@@ -123,8 +123,6 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
         xhr.send();
     }
 
-    var histo=[];
-    var histoelem={};
     var isvisible = [true];
     pageIndex = 0;
     setInterval(function () {
@@ -141,7 +139,5 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
             r = e.getBoundingClientRect();
             isvisible[i] = r.top < window.innerHeight && r.bottom >= 0;
         })
-        histo.push({arr:isvisible.toString(), len:isvisible.length});
-        console.table(histo);
     }, 500)
 </script>

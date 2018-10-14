@@ -129,6 +129,8 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
         <?php endfor;?>
       </ul>
     </div>
+    <input type="file" style="display:none;" onchange="previewFile(this)">
+    <button id="upload">Upload</button>
     <button id="capture">Capture</button>
     <button id="send">Send</button>
   </div>
@@ -148,6 +150,7 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
     <?php endforeach;?>
   </div>
 </div>
+<pre id="error"></pre>
 <script>
   function deleteimg(imgid) {
     if (confirm('Are you sure you want to delete this picture?')) {
@@ -157,7 +160,8 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
       xhr.onload = function () {
         var response = xhr.responseText;
         if (xhr.readyState == 4 && xhr.status == "200") {
-          document.querySelector('.sidebar  [data-index="'+imgid+'"]').remove();
+          if (response == "Ok") document.querySelector('.sidebar [data-index="'+imgid+'"]').remove();
+          else document.querySelector("#error").innerHTML = response;
         } else {
           //console.error(response);
         }
@@ -195,8 +199,10 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
   
   var camera = document.getElementById('camera');
   var visual = document.getElementById('visual');
-  var hascamera = false;
+  var realhascamera = false;
+  var hadupload = false;
   camera.isRunning = false;
+  camera.isBlock = false;
 
   var context = visual.getContext('2d');
   visual.width = 640;
@@ -215,18 +221,28 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
 
   function draw() {
     //if(camera.paused || camera.ended) return false;
-    context.drawImage(camera, 0, 0, 640, 480);
+    context.fillStyle = "white";
+    context.fillRect(0, 0, 640, 480);
+    if (realhascamera || (capture.style.display == "none" && hadupload))
+      try {
+        context.drawImage(camera, 0, 0, 640, 480);
+      } catch (e) {
+        hadupload = false;
+        send.style.display = "none";
+      }
+    
     context.drawImage(stickerimg, stickerdata.x, stickerdata.y, stickerdata.sx, stickerdata.sy);
     setTimeout(draw, 42, 640, 480);
   }
 
   navigator.getUserMedia({ video: { width: 640, height: 480 } }, function(stream) {
-		camera.srcObject = stream;
-    camera.addEventListener('play', draw, false);
-		camera.onloadedmetadata = function () { this.isRunning = true; hascamera = true; camera.play() };
+    if (camera) {
+      camera.srcObject = stream;
+      camera.addEventListener('play', draw, false);
+      camera.onloadedmetadata = function () { this.isRunning = true; realhascamera = true; this.play() };
+    }
 	}, function (err) {
-    hascamera = false;
-		console.log(err.name + ": " + err.message);
+    realhascamera = false;
 	});
 
 	var capture = document.getElementById('capture');
@@ -239,16 +255,34 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
 		xhr.onload = function () {
 			var response = xhr.responseText;
 			if (xhr.readyState == 4 && xhr.status == "200") {
-				location.reload();
+        if (response == "Ok") location.reload();
+        document.querySelector("#error").innerHTML = response;
 			} else {
 				//console.error(response);
 			}
 		}
 		xhr.send("json="+encodeURI(JSON.stringify(stickerdata)));
   }
+
+  function previewFile(e) {
+    if (e.files.length)
+      if ( /\.(jpe?g|png|gif)$/i.test(e.files[0].name) ) {
+        var reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+          camera = new Image();
+          camera.height = 480;
+          camera.width = 640;
+          camera.src = this.result;
+          hadupload = true;
+          send.style.display = "inline-block";
+        }, false);
+        reader.readAsDataURL(e.files[0]);
+      }
+  }
   
   capture.onclick = function () {
-    if (hascamera) {
+    if (realhascamera && !camera.isBlock) {
       if (camera.isRunning) {
         camera.pause();
         send.style.display = "inline-block";
@@ -260,15 +294,38 @@ if (!array_key_exists('user', $_SESSION)) header("location: /");
     }
   }
 	send.onclick = function () {
-    if (hascamera && !camera.isRunning) {
+    if ((realhascamera && !camera.isRunning) || (hadupload && capture.style.display == "none")) {
       var canvas = document.createElement('canvas');
       canvas.width = 640;
       canvas.height = 480;
       var ctx = canvas.getContext('2d');
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, 640, 480);
       ctx.drawImage(camera, 0, 0, 640, 480);
       stickerdata.img = canvas.toDataURL('image/png');
       postIMG();
     }
-	};
+    camera.isBlock = false;
+	}
+	upload.onclick = function () {
+    hadupload = false;
+    realhascamera = false;
+    camera = null;
+    capture.style.display = "none";
+    send.style.display = "none";
+    document.querySelector('[type="file"]').click();
+
+
+
+    /*
+    var canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(camera, 0, 0, 640, 480);
+    stickerdata.img = canvas.toDataURL('image/png');
+    postIMG();*/
+    
+	}
 
 </script>

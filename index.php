@@ -1,6 +1,5 @@
 <?php
-    if (session_status()==PHP_SESSION_NONE) session_start();
-    //$_SESSION['user']['id'] = 1;
+    require_once("config/database.php");
 ?>
 
 <!DOCTYPE html>

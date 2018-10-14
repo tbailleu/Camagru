@@ -1,8 +1,12 @@
 <?php
-	$HOSTNAME = "e3r11p1:8080";
+	$HOSTNAME = "localhost:8080";
     $DB_DSN = "mysql:host=localhost";
     $DB_USER = "root";
     $DB_PASSWORD = "salut123";
+
+	header('Access-Control-Allow-Origin: localhost'); 
+    header('Access-Control-Allow-Methods: GET, POST');
+    header('Access-Control-Max-Age: 1000');
 
 	if (session_status()==PHP_SESSION_NONE) session_start();
 

@@ -7,16 +7,16 @@ $imgnb = $imgnb > 0 ? $imgnb : 0;
 
 if ($imgnb > 2147483646) { echo "Well done, you won this game !!!"; die(); }
 
-$imglist = $pdo->query("SELECT * from `image` ORDER BY `id` DESC LIMIT 6 OFFSET ".$imgnb);
-if (!$imglist) { echo "Database error"; die(); }
+$imglist = $pdo->prepare("SELECT * from `image` ORDER BY `id` DESC LIMIT 6 OFFSET ".$imgnb);
+if (!$imglist->execute()) { echo "Database error"; die(); }
 $imglist = $imglist->fetchAll();
 
 foreach ($imglist as $img):?>
     <div data-imageid="<?=$img["id"]?>" class="image">
         <img src="<?=$img["path"]?>" alt="photo">
         <div class="username"><?php
-          $user = $pdo->query("SELECT `username` from `users` WHERE `id`=".intval($img["user_id"]));
-          if (!$user) { die(); }
+          $user = $pdo->prepare("SELECT `username` from `users` WHERE `id` = :userid");
+          if (!$user->execute(array('userid' => intval($img["user_id"])))) { die(); }
           $user = $user->fetch();
           echo $user["username"];?>
         </div>

@@ -1,5 +1,6 @@
 <?php
 if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
+$_SESSION["error"] = "";
 ?>
 <style>
 footer {

@@ -50,7 +50,7 @@ input[name=submitnewpass] {
         <input type="submit" value="Save" name="submitnewlogin">
     </form>
     <form class="form" action="utils/settings.php" method="post">
-        <label for="notify">Settings</label>
+        <label for="notify">Email notification settings</label>
         <input type="checkbox" name="notify" <?php
             if ($_SESSION["user"]["status"]===1) echo "checked";
         ?>>
@@ -66,3 +66,4 @@ input[name=submitnewpass] {
         <input type="submit" value="Save" name="submitnewpass">
     </form>
 </div>
+<pre id="error"><?=$_SESSION["error"];?></pre>
