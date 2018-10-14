@@ -5,7 +5,7 @@ if (array_key_exists('user', $_SESSION)) {echo "User logged"; die();}
 
 $token = $_REQUEST["token"];
 
-if (!preg_match("/^[a-z0-9]{384}$/", $token)) {echo "Token mal-formed"; die();}
+if (!preg_match("/^[a-z0-9]{256}$/", $token)) {echo "Token mal-formed"; die();}
 
 $foundUser = $pdo->prepare("SELECT * FROM `users` WHERE `activationkey` = :token");
 $foundUser->execute(array('token' => $token));
