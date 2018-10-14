@@ -12,9 +12,9 @@ if (array_key_exists('submitnewlogin', $data)) {
   if (!preg_match("/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/", $data['newmail'])) {echo "New email field mal-formed"; die();}
 
   $foundUser = $pdo->prepare("SELECT * FROM `users` WHERE `username` = :username AND `id` != :userid");
-  $foundUser->execute(array('username' => $data['username'], 'userid' => $_SESSION["user"]["id"]));
+  $foundUser->execute(array('username' => $data['newusername'], 'userid' => $_SESSION["user"]["id"]));
   $foundMail = $pdo->prepare("SELECT * FROM `users` WHERE `email` = :email AND `id` != :userid");
-  $foundMail->execute(array('email' => $data['email'], 'userid' => $_SESSION["user"]["id"]));
+  $foundMail->execute(array('email' => $data['newmail'], 'userid' => $_SESSION["user"]["id"]));
 
   $foundUser = $foundUser->fetch();
   $foundMail = $foundMail->fetch();
@@ -24,9 +24,9 @@ if (array_key_exists('submitnewlogin', $data)) {
   if ($foundMail) {echo "Email already used"; die();}
 
   $update = $pdo->prepare("UPDATE `users` SET `username`=:username, `email`=:email WHERE `id`=:userid");
-  $update->execute(array('username' => $data['username'], 'email' => $data['email'], 'userid' => $_SESSION["user"]["id"]));
-  $_SESSION["user"]["email"] = $data['email'];
-  $_SESSION["user"]["username"] = $data['username'];
+  $update->execute(array('username' => $data['newusername'], 'email' => $data['newmail'], 'userid' => $_SESSION["user"]["id"]));
+  $_SESSION["user"]["email"] = $data['newmail'];
+  $_SESSION["user"]["username"] = $data['newusername'];
 }
 
 if (array_key_exists('submitsetting', $data)) {
@@ -40,7 +40,7 @@ if (array_key_exists('submitnewpass', $data)) {
   if (!array_key_exists('newpass', $data) || !strlen($data['newpass'])) {echo "New password field not found"; die();}
   if (!array_key_exists('confirmpass', $data) || !strlen($data['confirmpass'])) {echo "Confirm password field not found"; die();}
 
-  if ($data['oldpass'] === $data['newpass']) { die();}
+  if ($data['oldpass'] === $data['newpass']) { header("location: /"); }
 
   if ($data['newpass'] !== $data['confirmpass']) {echo "New Passwords must match"; die();}
 
@@ -48,8 +48,9 @@ if (array_key_exists('submitnewpass', $data)) {
   if (!preg_match("/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,30}$/", $data['newpass'])) {echo "New password field mal-formed"; die();}
   if (!preg_match("/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,30}$/", $data['confirmpass'])) {echo "Confirm password field mal-formed"; die();}
   
-  $update = $pdo->prepare("UPDATE `users` set `pwd` = ':password' where `id` = ':userid'");
-  $update->execute(array(':password' => hash('whirlpool', $data['confirmpass']), ':userid' => $_SESSION["user"]["id"]));
+  $update = $pdo->prepare("UPDATE `users` set `pwd`=:pass where `id`=:userid AND `pwd`=:oldpass");
+  if (!($update->execute(array('pass' => hash('whirlpool', $data['confirmpass']), 'userid' => $_SESSION["user"]["id"], 'oldpass' => hash('whirlpool', $data['oldpass'])))))
+  {echo "Old password is incorrect"; die();}
 }
 
 header("location: /");

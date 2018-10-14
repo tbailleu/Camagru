@@ -58,9 +58,9 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
     padding: .5em;
     border-top: 1px solid rgba(0, 0, 0, .8);
     border-left: 1px solid rgba(0, 0, 0, .8);
+    cursor: pointer;
   }
   .page .image .action .like {
-    cursor: pointer;
     border-left: none;
     border-right: 1px solid rgba(0, 0, 0, .8);
   }
@@ -74,27 +74,25 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
     var pageIndex = 0;
     if (window.location.search.match(/(?:[&?])page=([0-9]+)/))
         pageIndex = +window.location.search.match(/(?:[&?])page=([0-9]+)/)[1];
-    var pagesize = document.querySelector(".imagelist > .page").clientHeight;
     var pageMin = pageIndex;
     var pageMax = pageIndex;
-    function getPreviouspage(){
+    function getPreviouspage(page){
+        if (page >= pageMin) return;
         if (pageMin == 0) return;
         pageMin--;
         //history.pushState({},"","?page="+pageMin);
         var xhr  = new XMLHttpRequest();
-        xhr.open('GET', "view/images.php?page="+pageMin, true);
+        xhr.open('GET', "view/images.php?page="+page, true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             var response = xhr.responseText;
             if (xhr.readyState == 4 && xhr.status == "200") {
                 var data = document.createElement("div");
                 data.innerHTML = response;
-                data.dataset.index = pageMin;
+                data.dataset.index = page;
                 data.className = "page";
-                pagesize = data.clientHeight;
-                var scrollY = window.scrollY;
                 document.querySelector(".imagelist .page").parentElement.insertBefore(data, document.querySelector(".imagelist > .page"));
-                window.scrollTo(0, scrollY + pagesize);
+                window.scrollTo(0, window.scrollY + data.clientHeight);
             } else {
                 //console.error(response);
                 window.location.reload();
@@ -102,20 +100,20 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
         }
         xhr.send();
     }
-    function getNextpage(){
+    function getNextpage(page){
+        if (page <= pageMax) return;
         pageMax++;
-        //history.pushState({},"","?page="+pageMax);
+        //history.pushState({},"","?page="+page);
         var xhr  = new XMLHttpRequest();
-        xhr.open('GET', "view/images.php?page="+pageMax, true);
+        xhr.open('GET', "view/images.php?page="+page, true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             var response = xhr.responseText;
             if (xhr.readyState == 4 && xhr.status == "200") {
                 var data = document.createElement("div");
                 data.innerHTML = response;
-                data.dataset.index = pageMax;
+                data.dataset.index = page;
                 data.className = "page";
-                pagesize = data.clientHeight;
                 document.querySelector(".imagelist .page").parentElement.appendChild(data);
             } else {
                 //console.error(response);
@@ -125,18 +123,25 @@ if ($_SERVER["PHP_SELF"] != "/index.php") header("location: /");
         xhr.send();
     }
 
+    var histo=[];
+    var histoelem={};
+    var isvisible = [true];
+    pageIndex = 0;
     setInterval(function () {
-        if (pagesize && document.body.scrollHeight - window.innerHeight - window.scrollY < pagesize/2)
-            getNextpage();
-        else if (window.scrollY <= pagesize/2)
-            getPreviouspage();
-        if (pagesize && pageIndex != document.querySelectorAll(".imagelist > .page")[parseInt(window.scrollY / pagesize)].dataset.index || 0){
-            pageIndex = document.querySelectorAll(".imagelist > .page")[parseInt(window.scrollY / pagesize)].dataset.index || 0
-            history.replaceState({},"","?page="+pageIndex);
-        }
+        if (pageIndex != isvisible.indexOf(true))
+            history.replaceState({},"","?page="+document.querySelectorAll(".imagelist .page")[isvisible.indexOf(true)].dataset.index);
+        pageIndex = isvisible.indexOf(true);
+        if (pageMax != 1e9 && isvisible[isvisible.length - 1])
+            getNextpage(+document.querySelectorAll(".imagelist .page")[isvisible.length - 1].dataset.index + 1);
+        else if (pageMin != 0 && isvisible[0])
+            getPreviouspage(+document.querySelectorAll(".imagelist .page")[0].dataset.index - 1);
+        isvisible = [true];
         document.querySelectorAll(".imagelist .page").forEach(function (e, i) {
-            if (i && e.clientHeight == 16)
-                e.remove();
+            if (i && e.clientHeight == 16) {pageMax=1e9; e.remove(); return;}
+            r = e.getBoundingClientRect();
+            isvisible[i] = r.top < window.innerHeight && r.bottom >= 0;
         })
+        histo.push({arr:isvisible.toString(), len:isvisible.length});
+        console.table(histo);
     }, 500)
 </script>

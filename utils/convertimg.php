@@ -5,7 +5,7 @@
 
 	$data = json_decode($_REQUEST['json'], true);
 
-	$sticker = imagecreatefrompng("stickers/".intval($data['sticker']).".png");
+	$sticker = imagecreatefrompng("stickers/".intval($data['sid']).".png");
 	
 	$data['img'] = str_replace(' ', '+', $data['img']);
 	$img = imagecreatefromstring(base64_decode(explode(',', $data['img'])[1]));
